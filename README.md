@@ -10,9 +10,8 @@ Ubicación por defecto: Colombia. Interfaz 100% en español o 100% en inglés.
 
 ## Abrir la app
 
-- **Escritorio:** doble clic en `Workapp.bat` (instala dependencias solo
-  la primera vez y abre la app).
-- **Instalador/opciones:** `python install_wizard.py` (wizard gráfico).
+- **Escritorio (sin terminal):** doble clic en `Workapp.pyw`.
+- **Escritorio (instala deps primero):** doble clic en `Workapp.bat`.
 - **Web:** `python main_web.py` → abre sola el navegador en
   http://localhost:5000 (déjala corriendo, cierra con CTRL+C).
 
