@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ app_name }} — {{ T.app_tagline }}</h1>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+<form action="{{ url_for('jobs') }}" method="get" class="card">
+  <label>{{ T.keyword }}: <input name="q" value="python" required></label>
+  <label>{{ T.location }}: <input name="loc" value="Colombia"></label>
+  <label><input type="checkbox" name="hide_spam" value="1" checked> Anti-fraude / Anti-scam</label>
+  <button type="submit">{{ T.search }}</button>
+</form>
+
+<form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" class="card">
+  <label>{{ T.upload_cv }}: <input type="file" name="cv" accept=".pdf" required></label>
+  <button type="submit">{{ T.analyze }}</button>
+</form>
+
+{% if cv %}
+<div class="card ok">
+  <b>CV:</b> {{ cv.email }} · {{ cv.experience_years }} · {{ cv.skills[:10] | join(', ') }}
+</div>
+{% endif %}
+{% endblock %}

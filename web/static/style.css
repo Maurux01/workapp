@@ -1,0 +1,10 @@
+body{font-family:system-ui,Arial,sans-serif;max-width:860px;margin:0 auto;padding:0 16px 40px;background:#f8fafc;color:#111}
+nav{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #ddd}
+.spacer{flex:1}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px;margin:12px 0}
+button{background:#1d4ed8;color:#fff;border:0;border-radius:8px;padding:8px 14px;cursor:pointer}
+input{padding:6px 8px;border:1px solid #cbd5e1;border-radius:6px;margin:4px}
+.badge{display:inline-block;background:#eef2ff;border-radius:20px;padding:2px 10px;margin-left:8px;font-size:.85em}
+.badge.ok{background:#dcfce7}.badge.danger{background:#fee2e2;color:#991b1b}
+.muted{color:#64748b;font-size:.9em}
+.error{color:#b91c1c}
