@@ -1,5 +1,5 @@
 """Run all scrapers, normalize, filter by type/modality, dedupe, cache."""
-from config import SCRAPER_CONFIG
+from config import SCRAPER_CONFIG, BLOCKED_COMPANIES
 from parsers.job_parser import normalize_job, is_valid_job, matches_filters
 from scrapers.computrabajo_scraper import ComputrabajoScraper
 from scrapers.arbeitnow_scraper import ArbeitnowScraper
@@ -82,7 +82,11 @@ class ScraperManager:
                 raw = scraper.search(keyword, location, max_per_source, filters)
                 for r in raw:
                     job = normalize_job({**r, "source": scraper.source_name})
-                    if is_valid_job(job) and matches_filters(job, job_types, modalities):
+                    if not is_valid_job(job):
+                        continue
+                    if self._is_blocked(job):
+                        continue
+                    if matches_filters(job, job_types, modalities):
                         all_jobs.append(job)
             except Exception as exc:  # noqa: BLE001
                 logger.warning(f"Scraper {scraper.source_name} failed: {exc}")
@@ -98,6 +102,16 @@ class ScraperManager:
             self._cache.set(cache_key, jobs)
         self._persist_supabase(jobs)
         return jobs
+
+    @staticmethod
+    def _is_blocked(job: dict) -> bool:
+        """Drop ghost-posters / blocked companies before they reach the UI."""
+        company = (job.get("company_name") or "").lower()
+        for blocked in BLOCKED_COMPANIES:
+            if blocked.lower() in company:
+                logger.info(f"Blocked '{job.get('title')}' from '{job.get('company_name')}'")
+                return True
+        return False
 
     @staticmethod
     def _persist_supabase(jobs: list) -> None:

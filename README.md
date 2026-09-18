@@ -5,20 +5,20 @@ Arbeitnow, Indeed, Computrabajo), analiza tu CV en PDF, mide compatibilidad
 por skills, marca posible fraude y guarda todo en Supabase.
 Ubicación por defecto: Colombia. Interfaz 100% en español o 100% en inglés.
 
-## Instalación rápida (Windows)
+## Abrir la app
 
-```bat
-install.bat
- rem o:  python install_wizard.py
-```
+- **Escritorio:** doble clic en `Workapp.bat` (instala dependencias solo
+  la primera vez y abre la app).
+- **Instalador/opciones:** `python install_wizard.py` (wizard gráfico).
+- **Web:** `python main_web.py` → abre sola el navegador en
+  http://localhost:5000 (déjala corriendo, cierra con CTRL+C).
 
-Manual:
+## Instalación manual
 
 ```bash
 pip install -r requirements.txt
-cp .env.example .env
-python main_desktop.py   # escritorio / desktop
-python main_web.py       # web en http://localhost:5000
+cp .env.example .env   # el .env real NUNCA se sube a git
+python main_desktop.py
 ```
 
 ## Uso
@@ -27,7 +27,9 @@ python main_web.py       # web en http://localhost:5000
 2. Busca por palabra clave + ubicación, con checkboxes de jornada
    (tiempo completo, medio tiempo, freelance, pasantía) y modalidad
    (remoto, presencial, híbrido).
-3. Cada oferta pasa detector anti-fraude y, si hay CV, recibe % de match.
+3. Cada oferta pasa detector anti-fraude y anti-fantasma: bloquea empresas
+   como `varesdev`, carnadas de "banco de talentos" y reposts de +60 días.
+   Agrega más con `BLOCKED_COMPANIES=otra1,otra2` en tu `.env`.
 4. Cambia ES/EN en cualquier momento: toda la interfaz cambia de idioma.
 
 ## Supabase

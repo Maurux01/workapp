@@ -130,8 +130,24 @@ def _cv_summary(cv: dict | None) -> dict | None:
             "skills": (cv.get("skills", []) or [])[:10]}
 
 
-def run():
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")), debug=True)
+def run(open_browser: bool = True):
+    """Start the server, print the URL big and clear, and open the browser.
+
+    use_reloader=False so double-clicking main_web.py opens ONE tab.
+    """
+    import threading
+    import webbrowser
+    port = int(os.getenv("PORT", "5000"))
+    url = f"http://localhost:{port}"
+    print("=" * 56)
+    print(f"  WORKAPP WEB  ->  {url}")
+    print(f"  WORKAPP WEB  ->  {url}")
+    print("  Deja esta ventana abierta. Cierra con CTRL+C.")
+    print("  Keep this window open. Close with CTRL+C.")
+    print("=" * 56)
+    if open_browser:
+        threading.Timer(1.2, lambda: webbrowser.open_new_tab(url)).start()
+    app.run(host="0.0.0.0", port=port, debug=True, use_reloader=False)
 
 
 if __name__ == "__main__":
