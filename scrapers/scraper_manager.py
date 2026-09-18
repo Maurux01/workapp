@@ -3,11 +3,13 @@ from config import SCRAPER_CONFIG, BLOCKED_COMPANIES
 from parsers.job_parser import normalize_job, is_valid_job, matches_filters
 from scrapers.computrabajo_scraper import ComputrabajoScraper
 from scrapers.arbeitnow_scraper import ArbeitnowScraper
+from scrapers.hnhiring_scraper import HnhiringScraper
 from scrapers.indeed_scraper import IndeedScraper
 from scrapers.jooble_scraper import JoobleScraper
 from scrapers.linkedin_scraper import LinkedinScraper
 from scrapers.remoteok_scraper import RemoteokScraper
 from scrapers.remotive_scraper import RemotiveScraper
+from scrapers.weworkremotely_scraper import WeworkremotelyScraper
 from utils.logger import setup_logger
 
 logger = setup_logger(__name__)
@@ -38,15 +40,16 @@ SAMPLE_JOBS = [
 
 class ScraperManager:
     SOURCES = ("linkedin", "jooble", "remoteok", "remotive", "arbeitnow",
-                 "indeed", "computrabajo")
+                 "weworkremotely", "hnhiring", "indeed", "computrabajo")
 
     def __init__(self, use_cache: bool = True):
         # NOTE: occ scraper kept as best-effort module but out of the default
-        # pool (bot-wall + JS-rendered results). Re-add when stable.
+        # pool (bot-wall + JS-rendered results). Upwork has no public feed
+        # (killed RSS, Cloudflare wall) so it can't be integrated reliably.
         self.scrapers = [
             LinkedinScraper(), JoobleScraper(), RemoteokScraper(),
-            RemotiveScraper(), ArbeitnowScraper(),
-            IndeedScraper(), ComputrabajoScraper(),
+            RemotiveScraper(), ArbeitnowScraper(), WeworkremotelyScraper(),
+            HnhiringScraper(), IndeedScraper(), ComputrabajoScraper(),
         ]
         self.use_cache = use_cache
         self._cache = None

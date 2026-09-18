@@ -1,0 +1,34 @@
+*{box-sizing:border-box}
+:root{--blue:#1d4ed8;--ink:#0f172a;--mut:#64748b;--bg:#f1f5f9;--card:#fff;--line:#e2e8f0}
+body{font-family:"Segoe UI",system-ui,Arial,sans-serif;max-width:920px;margin:0 auto;padding:0 16px 48px;background:var(--bg);color:var(--ink)}
+nav{display:flex;gap:14px;align-items:center;padding:14px 4px}
+nav a{color:#334155;text-decoration:none}
+nav a.brand{font-weight:800;color:var(--blue);font-size:1.15em}
+.linklike{background:none;border:0;color:#334155;cursor:pointer;font-size:1em;padding:0}
+.linklike.active{font-weight:700;color:var(--blue)}
+.spacer{flex:1}.sep{color:#94a3b8}
+.hero{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border-radius:14px;padding:26px 22px;margin:10px 0 16px}
+.hero h1{margin:0}.hero p{margin:6px 0 0;opacity:.92}.tiny{font-size:.82em;opacity:.75}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 1px 2px rgba(15,23,42,.05)}
+.card.ok{background:#f0fdf4;border-color:#bbf7d0}
+.row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-top:8px}
+label{display:flex;flex-direction:column;gap:4px;font-size:.92em;color:#334155}
+label.chk{flex-direction:row;align-items:center;gap:6px;margin-right:12px}
+fieldset{border:1px solid var(--line);border-radius:8px;margin:8px 0;padding:8px 12px}
+legend{font-size:.85em;color:var(--mut);padding:0 6px}
+.chks{display:flex;flex-wrap:wrap}
+button,.btn{background:var(--blue);color:#fff;border:0;border-radius:8px;padding:9px 18px;cursor:pointer;text-decoration:none;display:inline-block;font-size:1em}
+button:hover,.btn:hover{background:#1e40af}
+button:disabled{opacity:.6;cursor:wait}
+input:not([type=checkbox]):not([type=file]){padding:8px 10px;border:1px solid #cbd5e1;border-radius:8px;min-width:180px}
+.badge{display:inline-block;background:#dbeafe;color:#1e3a8a;border-radius:20px;padding:2px 12px;margin:2px 4px 2px 0;font-size:.82em}
+.badge.ok{background:#dcfce7;color:#166534}.badge.danger{background:#fee2e2;color:#991b1b}.badge.gray{background:#f1f5f9;color:#475569}
+.muted{color:var(--mut);font-size:.9em;margin-top:4px}
+.skills{font-size:.9em;margin-top:6px}
+.error{background:#fee2e2;color:#991b1b;border-radius:8px;padding:10px 14px}
+.hidden{display:none}
+.job-head{line-height:1.9}
+.job p{margin:8px 0}
+footer{margin-top:32px;color:#94a3b8;font-size:.85em;text-align:center}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid #bfdbfe;border-top-color:var(--blue);border-radius:50%;animation:sp 0.8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}

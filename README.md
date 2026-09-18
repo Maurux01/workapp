@@ -1,6 +1,9 @@
 # Workapp — La forma inteligente de conseguir trabajo / The smart way to get a job
 
-Busca ofertas reales en 7 fuentes (LinkedIn, Jooble, RemoteOK, Remotive,
+🌐 **Úsala en el navegador (sin instalar nada): https://maurux01.github.io/workapp/**
+(ofertas remotas en vivo, análisis de CV en tu navegador, ES/EN)
+
+Busca ofertas reales en 9 fuentes (LinkedIn, Jooble, RemoteOK, Remotive,
 Arbeitnow, Indeed, Computrabajo), analiza tu CV en PDF, mide compatibilidad
 por skills, marca posible fraude y guarda todo en Supabase.
 Ubicación por defecto: Colombia. Interfaz 100% en español o 100% en inglés.

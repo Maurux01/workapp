@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Workapp — La forma inteligente de conseguir trabajo</title>
+  <meta name="description" content="Busca ofertas reales, analiza tu CV y mide compatibilidad. 100% en tu navegador.">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+<nav>
+  <a class="brand" href="#" id="navBrand">Workapp</a>
+  <a href="#" id="navHome">Inicio</a>
+  <a href="#results" id="navResults">Resultados</a>
+  <span class="spacer"></span>
+  <button class="linklike" id="langEs">ES</button><span class="sep">|</span><button class="linklike" id="langEn">EN</button>
+</nav>
+<main>
+  <header class="hero">
+    <h1>Workapp</h1>
+    <p id="heroSub"></p>
+    <p class="tiny" id="heroNote"></p>
+  </header>
+  <p class="error hidden" id="error"></p>
+
+  <section class="card">
+    <div class="row">
+      <label><span id="lblKeyword"></span><input id="inKeyword" value="python" required></label>
+      <label><span id="lblLocation"></span><input id="inLocation" value="Colombia"></label>
+    </div>
+    <fieldset><legend id="legType"></legend><span id="boxTypes" class="chks"></span></fieldset>
+    <fieldset><legend id="legMod"></legend><span id="boxMods" class="chks"></span></fieldset>
+    <div class="row">
+      <label class="chk"><input type="checkbox" id="inHideSpam" checked> <span id="lblHideSpam"></span></label>
+      <button id="btnSearch"></button>
+    </div>
+  </section>
+
+  <section class="card">
+    <label><span id="lblUpload"></span><input type="file" id="inCv" accept=".pdf"></label>
+    <div class="row"><button id="btnAnalyze"></button><span class="muted" id="cvStatus"></span></div>
+    <div class="card ok hidden" id="cvBox"></div>
+  </section>
+
+  <h2 id="resTitle"></h2>
+  <div id="results"></div>
+</main>
+<footer id="footer"></footer>
+<script src="./app.js"></script>
+</body>
+</html>
