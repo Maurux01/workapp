@@ -1,23 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>{{ app_name }} — {{ T.app_tagline }}</h1>
+<header class="hero">
+  <h1>{{ app_name }}</h1>
+  <p>{{ T.web_title }}</p>
+</header>
 {% if error %}<p class="error">{{ error }}</p>{% endif %}
 
 <form action="{{ url_for('jobs') }}" method="get" class="card">
-  <label>{{ T.keyword }}: <input name="q" value="python" required></label>
-  <label>{{ T.location }}: <input name="loc" value="Colombia"></label>
-  <label><input type="checkbox" name="hide_spam" value="1" checked> Anti-fraude / Anti-scam</label>
-  <button type="submit">{{ T.search }}</button>
+  <div class="row">
+    <label>{{ T.keyword }}<input name="q" value="python" required></label>
+    <label>{{ T.location }}<input name="loc" value="Colombia"></label>
+  </div>
+  <fieldset>
+    <legend>{{ T.job_type }}</legend>
+    {% for k in JOB_TYPES %}<label class="chk"><input type="checkbox" name="jt" value="{{ k }}"> {{ T[k] }}</label>{% endfor %}
+  </fieldset>
+  <fieldset>
+    <legend>{{ T.modality }}</legend>
+    {% for k in MODALITIES %}<label class="chk"><input type="checkbox" name="mod" value="{{ k }}"> {{ T[k] }}</label>{% endfor %}
+  </fieldset>
+  <div class="row">
+    <label class="chk"><input type="checkbox" name="hide_spam" value="1" checked> {{ T.hide_spam }}</label>
+    <button type="submit">{{ T.search }}</button>
+  </div>
 </form>
 
 <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" class="card">
-  <label>{{ T.upload_cv }}: <input type="file" name="cv" accept=".pdf" required></label>
+  <label>{{ T.upload_cv }}<input type="file" name="cv" accept=".pdf" required></label>
   <button type="submit">{{ T.analyze }}</button>
 </form>
 
 {% if cv %}
 <div class="card ok">
-  <b>CV:</b> {{ cv.email }} · {{ cv.experience_years }} · {{ cv.skills[:10] | join(', ') }}
+  <b>{{ T.cv_ready }}:</b> {{ cv.email }} · {{ T.experience }}: {{ cv.experience_years }} · {{ cv.skills | join(', ') }}
 </div>
 {% endif %}
 {% endblock %}

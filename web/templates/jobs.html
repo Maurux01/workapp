@@ -1,19 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>{{ T.results }}: "{{ q }}" en {{ loc }} ({{ jobs | length }})</h2>
-<p><a href="{{ url_for('index') }}">← {{ T.home }}</a></p>
+<h2>{{ T.results_for }} "{{ q }}" {{ T.in }} {{ loc }} ({{ jobs | length }})</h2>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<p><a href="{{ url_for('index') }}">← {{ T.back_home }}</a></p>
 {% for j in jobs %}
 <div class="card">
-  <b>{{ j.title }}</b>
-  {% if j.score is defined %}<span class="badge">{{ j.score }}% {{ T.match }}</span>{% endif %}
-  {% if j.spam and j.spam.is_spam %}<span class="badge danger">{{ T.is_spam }} ({{ j.spam.risk_score }})</span>
-  {% else %}<span class="badge ok">{{ T.no_spam }}</span>{% endif %}
+  <div class="job-head"><b>{{ j.title }}</b>
+    {% if j.score is defined %}<span class="badge">{{ j.score }}% {{ T.match }}</span>{% endif %}
+    {% if j.job_type and j.job_type != 'unknown' %}<span class="badge gray">{{ T[j.job_type] }}</span>{% endif %}
+    {% if j.modality and j.modality != 'unknown' %}<span class="badge gray">{{ T[j.modality] }}</span>{% endif %}
+    {% if j.spam and j.spam.is_spam %}<span class="badge danger">{{ T.possible_scam }} ({{ T.risk }} {{ j.spam.risk_score }})</span>
+    {% else %}<span class="badge ok">✓ {{ T.verified }}</span>{% endif %}
+  </div>
   <div class="muted">{{ j.company_name }} · {{ j.location }} · {{ j.source }}</div>
-  {% if j.matched_skills %}<div>Skills: {{ j.matched_skills | join(', ') }}</div>{% endif %}
+  {% if j.matched_skills %}<div class="skills">{{ T.skills }}: {{ j.matched_skills | join(', ') }}</div>{% endif %}
   <p>{{ j.short }}</p>
-  {% if j.url %}<a href="{{ j.url }}" target="_blank" rel="noopener">Ver oferta / View →</a>{% endif %}
+  {% if j.url %}<a class="btn" href="{{ j.url }}" target="_blank" rel="noopener">{{ T.view_offer }} →</a>{% endif %}
 </div>
 {% else %}
-<p>Sin resultados. / No results.</p>
+<p>{{ T.no_results }}</p>
 {% endfor %}
 {% endblock %}

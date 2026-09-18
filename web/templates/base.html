@@ -3,19 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ app_name }}</title>
+  <title>{{ app_name }} — {{ T.tagline }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <nav>
-  <strong>{{ app_name }}</strong>
-  <a href="{{ url_for('index') }}">{{ T.home }}</a>
-  <a href="{{ url_for('jobs') }}">{{ T.results }}</a>
+  <a class="brand" href="{{ url_for('index') }}">{{ app_name }}</a>
+  <a href="{{ url_for('index') }}">{{ T.nav_home }}</a>
+  <a href="{{ url_for('jobs') }}">{{ T.nav_results }}</a>
   <span class="spacer"></span>
-  <a href="{{ url_for('set_lang', lang='es') }}">ES</a> |
-  <a href="{{ url_for('set_lang', lang='en') }}">EN</a>
+  <a href="{{ url_for('set_lang', lang='es') }}" class="{% if lang=='es' %}active{% endif %}">ES</a>
+  <span class="sep">|</span>
+  <a href="{{ url_for('set_lang', lang='en') }}" class="{% if lang=='en' %}active{% endif %}">EN</a>
 </nav>
 <main>{% block content %}{% endblock %}</main>
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+<footer>{{ T.footer }}</footer>
 </body>
 </html>
