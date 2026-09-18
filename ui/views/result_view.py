@@ -18,7 +18,10 @@ class ResultView(ttk.Frame):
         self.inner = ttk.Frame(canvas)
         self.inner.bind("<Configure>",
                         lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=self.inner, anchor="nw")
+        # Keep the inner frame as wide as the canvas: no white gutter on the right.
+        self._win = canvas.create_window((0, 0), window=self.inner, anchor="nw")
+        canvas.bind("<Configure>",
+                    lambda e: canvas.itemconfig(self._win, width=e.width))
         canvas.configure(yscrollcommand=scrollbar.set)
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
