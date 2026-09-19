@@ -3,6 +3,11 @@
 🌐 **Úsala en el navegador (sin instalar nada): https://maurux01.github.io/workapp/**
 (ofertas remotas en vivo, análisis de CV en tu navegador, ES/EN)
 
+💾 **Descargar para Windows (sin saber de GitHub ni Python):
+https://github.com/Maurux01/workapp/releases/latest**
+baja `Workapp.exe`, doble clic y listo. Si Windows SmartScreen avisa,
+clic en "Más información" → "Ejecutar de todas formas".
+
 Busca ofertas reales en 9 fuentes (LinkedIn, Jooble, RemoteOK, Remotive,
 Arbeitnow, Indeed, Computrabajo), analiza tu CV en PDF, mide compatibilidad
 por skills, marca posible fraude y guarda todo en Supabase.
