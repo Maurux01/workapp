@@ -8,7 +8,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 MISSING = []
-for _mod in ("flask", "requests", "bs4", "lxml", "pypdf", "dotenv"):
+for _mod in ("tkinter", "requests", "bs4", "lxml", "dotenv", "pypdf"):
     try:
         __import__(_mod)
     except ImportError:
