@@ -15,6 +15,7 @@ body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;max-width:9
 nav{position:sticky;top:0;z-index:10;display:flex;gap:14px;align-items:center;padding:12px 4px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 nav a{color:var(--mut);text-decoration:none;font-weight:600}
 nav a.brand{font-weight:800;font-size:1.2em;background:linear-gradient(135deg,var(--blue),var(--blue2));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav a.brand img{vertical-align:-6px;border-radius:7px}
 .linklike{background:none;border:0;color:var(--mut);cursor:pointer;font-size:1em;padding:4px 6px;border-radius:8px}
 .linklike:hover{color:var(--blue)}
 .linklike.active{font-weight:800;color:var(--blue)}

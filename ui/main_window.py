@@ -54,12 +54,49 @@ class MainWindow(tk.Tk):
         self._apply_title()
 
     # --- chrome ---
+    def _app_icon(self, size: int = 28):
+        """Load the devicon (cached). None if missing."""
+        key = f"_icon_{size}"
+        if hasattr(self, key):
+            return getattr(self, key)
+        img = None
+        try:
+            from pathlib import Path
+            png = Path(__file__).resolve().parent.parent / "assets" / "icon-64.png"
+            if png.is_file():
+                img = tk.PhotoImage(file=str(png)).subsample(max(1, 64 // size), max(1, 64 // size))
+                setattr(self, key, img)
+        except Exception:  # noqa: BLE001
+            img = None
+        return img
+
+    def _apply_window_icon(self):
+        try:
+            from pathlib import Path
+            ico = Path(__file__).resolve().parent.parent / "assets" / "icon.ico"
+            if ico.is_file() and hasattr(self, "iconbitmap"):
+                self.iconbitmap(default=str(ico))
+        except Exception:  # noqa: BLE001
+            pass
+        img = self._app_icon(32)
+        if img:
+            try:
+                self.iconphoto(True, img)
+            except Exception:  # noqa: BLE001
+                pass
+
     def _build_chrome(self):
+        self._apply_window_icon()
         header = ttk.Frame(self, style="Header.TFrame", padding=(16, 14))
         header.pack(fill="x")
+        logo = ttk.Frame(header, style="Header.TFrame")
+        logo.pack(side="left")
+        icon = self._app_icon(30)
+        if icon:
+            ttk.Label(logo, image=icon, style="Header.TLabel").pack(side="left", padx=(0, 10))
         txt = ttk.Frame(header, style="Header.TFrame")
         txt.pack(side="left")
-        self.title_lbl = ttk.Label(txt, text="💼 " + APP_NAME, style="HeaderTitle.TLabel")
+        self.title_lbl = ttk.Label(txt, text=APP_NAME, style="HeaderTitle.TLabel")
         self.title_lbl.pack(anchor="w")
         self.tag_lbl = ttk.Label(txt, text="", style="HeaderSub.TLabel")
         self.tag_lbl.pack(anchor="w")
