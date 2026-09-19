@@ -14,6 +14,14 @@ from ui.views.settings_view import SettingsView
 from utils.i18n import t
 
 
+def resource_path(*parts: str) -> str:
+    """Path that works both in source and inside the PyInstaller bundle."""
+    import sys
+    from pathlib import Path
+    base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
+    return str(base.joinpath(*parts))
+
+
 class Splash(tk.Toplevel):
     def __init__(self, parent, lang: str):
         super().__init__(parent)
@@ -23,8 +31,18 @@ class Splash(tk.Toplevel):
         x = parent.winfo_screenwidth() // 2 - w // 2
         y = parent.winfo_screenheight() // 2 - h // 2
         self.geometry(f"{w}x{h}+{x}+{y}")
-        tk.Label(self, text="💼", font=("Segoe UI", 44),
-                 background=TH.PRIMARY_DARK, foreground="white").pack(pady=(24, 0))
+        try:
+            import os
+            _png = resource_path("assets", "icon-64.png")
+            if os.path.isfile(_png):
+                self._logo = tk.PhotoImage(file=_png)
+                tk.Label(self, image=self._logo,
+                         background=TH.PRIMARY_DARK).pack(pady=(20, 0))
+            else:
+                raise FileNotFoundError
+        except Exception:  # noqa: BLE001
+            tk.Label(self, text="💼", font=("Segoe UI", 44),
+                     background=TH.PRIMARY_DARK, foreground="white").pack(pady=(24, 0))
         tk.Label(self, text=APP_NAME, font=("Segoe UI", 18, "bold"),
                  background=TH.PRIMARY_DARK, foreground="white").pack()
         tk.Label(self, text=t("tagline", lang), font=("Segoe UI", 10),
@@ -61,21 +79,21 @@ class MainWindow(tk.Tk):
             return getattr(self, key)
         img = None
         try:
-            from pathlib import Path
-            png = Path(__file__).resolve().parent.parent / "assets" / "icon-64.png"
-            if png.is_file():
-                img = tk.PhotoImage(file=str(png)).subsample(max(1, 64 // size), max(1, 64 // size))
+            import os
+            png = resource_path("assets", "icon-64.png")
+            if os.path.isfile(png):
+                img = tk.PhotoImage(file=png).subsample(max(1, 64 // size), max(1, 64 // size))
                 setattr(self, key, img)
         except Exception:  # noqa: BLE001
             img = None
         return img
 
     def _apply_window_icon(self):
+        import os
         try:
-            from pathlib import Path
-            ico = Path(__file__).resolve().parent.parent / "assets" / "icon.ico"
-            if ico.is_file() and hasattr(self, "iconbitmap"):
-                self.iconbitmap(default=str(ico))
+            ico = resource_path("assets", "icon.ico")
+            if os.path.isfile(ico) and hasattr(self, "iconbitmap"):
+                self.iconbitmap(default=ico)
         except Exception:  # noqa: BLE001
             pass
         img = self._app_icon(32)
