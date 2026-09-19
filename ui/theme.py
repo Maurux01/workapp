@@ -36,12 +36,13 @@ def _conf_path() -> str:
 
 
 def load_mode() -> str:
+    """Persisted choice wins; fresh installs default to dark."""
     try:
         with open(_conf_path(), encoding="utf-8") as fh:
-            mode = json.load(fh).get("mode", "light")
-            return mode if mode in PALETTES else "light"
+            mode = json.load(fh).get("mode", "dark")
+            return mode if mode in PALETTES else "dark"
     except (OSError, ValueError):
-        return "light"
+        return "dark"
 
 
 def save_mode(mode: str) -> None:
