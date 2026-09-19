@@ -90,12 +90,16 @@ class MainWindow(tk.Tk):
 
     def _apply_window_icon(self):
         import os
-        try:
-            ico = resource_path("assets", "icon.ico")
-            if os.path.isfile(ico) and hasattr(self, "iconbitmap"):
-                self.iconbitmap(default=ico)
-        except Exception:  # noqa: BLE001
-            pass
+        ico = resource_path("assets", "icon.ico")
+        if os.path.isfile(ico):
+            # Direct call (not default=): Windows taskbar takes the window icon.
+            for call in (lambda: self.iconbitmap(ico),
+                         lambda: self.iconbitmap(default=ico)):
+                try:
+                    call()
+                    break
+                except Exception:  # noqa: BLE001
+                    continue
         img = self._app_icon(32)
         if img:
             try:
