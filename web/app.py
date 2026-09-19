@@ -64,6 +64,40 @@ def set_lang(lang):
     return redirect(dest)
 
 
+@app.route("/match", methods=["GET"])
+def match():
+    """One search per top CV skill → merged, ranked jobs."""
+    lang = get_lang()
+    cv = get_cv()
+    if not cv:
+        return redirect(url_for("index", error=t("no_cv", lang)))
+    location = request.args.get("loc", DEFAULT_LOCATION).strip() or DEFAULT_LOCATION
+    hide_spam = request.args.get("hide_spam", "1") == "1"
+    job_types = [v for v in request.args.getlist("jt") if v in JOB_TYPE_KEYS]
+    modalities = [v for v in request.args.getlist("mod") if v in MODALITY_KEYS]
+    try:
+        results, queries = manager.search_for_cv(cv, location,
+                                                 job_types=job_types,
+                                                 modalities=modalities)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(f"match search failed: {exc}")
+        return render_template("jobs.html", jobs=[], q="+".join(queries or []),
+                               loc=location, hide_spam=hide_spam,
+                               job_types=job_types, modalities=modalities,
+                               cv=_cv_summary(cv), error=str(exc))
+    for j in results:
+        j["spam"] = spam_detector.detect(j)
+    if hide_spam:
+        results = [j for j in results if not j["spam"].get("is_spam")]
+    results = matcher.rank(cv, results)
+    for j in results:
+        j["short"] = truncate(j.get("description", ""), 280)
+    return render_template("jobs.html", jobs=results, q=" + ".join(queries),
+                           loc=location, hide_spam=hide_spam,
+                           job_types=job_types, modalities=modalities,
+                           cv=_cv_summary(cv), error=None)
+
+
 @app.route("/upload", methods=["POST"])
 def upload():
     lang = get_lang()

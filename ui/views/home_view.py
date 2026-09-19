@@ -17,7 +17,10 @@ class HomeView(ttk.Frame):
                   font=("Segoe UI", 16, "bold")).pack(anchor="w")
         ttk.Label(hero, text=t("tagline", lang),
                   style="CardMuted.TLabel").pack(anchor="w", pady=(2, 0))
-        FiltersPanel(self, on_search=app.search_jobs, lang=lang).pack(fill="x")
+        self.filters = FiltersPanel(self, on_search=app.search_jobs, lang=lang)
+        self.filters.pack(fill="x")
+        ttk.Button(self, text="✨ " + t("match_cv", lang), style="Accent.TButton",
+                   command=self._match_cv).pack(pady=(10, 0))
         PdfUploader(self, on_analyzed=app.set_cv, lang=lang).pack(fill="x", pady=(12, 0))
         self.info = ttk.Label(self, text="", foreground=TH.PRIMARY,
                               font=("Segoe UI", 10, "bold"),
@@ -26,3 +29,12 @@ class HomeView(ttk.Frame):
 
     def set_info(self, text: str):
         self.info.config(text=text)
+
+    def _match_cv(self):
+        f = self.filters
+        self.app.search_for_cv(
+            f.location.get().strip(),
+            f.hide_spam.get(),
+            [k for k, v in f.type_vars.items() if v.get()],
+            [k for k, v in f.mod_vars.items() if v.get()],
+        )

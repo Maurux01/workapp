@@ -106,6 +106,45 @@ class ScraperManager:
         self._persist_supabase(jobs)
         return jobs
 
+    def search_for_cv(self, cv_data: dict, location: str = "",
+                      job_types: list | None = None,
+                      modalities: list | None = None,
+                      max_queries: int = 5) -> tuple[list, list]:
+        """Fan out one search per top CV skill, merge + dedupe.
+
+        Returns (jobs, queries_used). Per-skill results reuse the normal
+        cache, so repeated skills are instant.
+        """
+        skills = self._top_skills(cv_data, max_queries)
+        if not skills:
+            return self.search_all("developer", location,
+                                   job_types=job_types, modalities=modalities), ["developer"]
+        merged: list = []
+        for skill in skills:
+            try:
+                merged.extend(self.search_all(skill, location,
+                                              job_types=job_types,
+                                              modalities=modalities))
+            except Exception as exc:  # noqa: BLE001
+                logger.warning(f"CV skill search '{skill}' failed: {exc}")
+        return self._dedupe(merged), skills
+
+    @staticmethod
+    def _top_skills(cv_data: dict, limit: int) -> list:
+        """Top CV skills by frequency in the CV text (distinctive first)."""
+        import re
+        skills = [s for s in (cv_data.get("skills") or []) if s]
+        if not skills:
+            return []
+        text = (cv_data.get("clean_text") or cv_data.get("raw_text") or "").lower()
+        generic = {"git", "linux", "excel", "agile", "scrum", "jira", "html", "css"}
+
+        def score(s: str) -> tuple:
+            freq = len(re.findall(r"\b" + re.escape(s.lower()) + r"\b", text))
+            return (0 if s.lower() in generic else 1, freq, len(s))
+
+        return sorted(set(skills), key=score, reverse=True)[:max(1, limit)]
+
     @staticmethod
     def _is_blocked(job: dict) -> bool:
         """Drop ghost-posters / blocked companies before they reach the UI."""

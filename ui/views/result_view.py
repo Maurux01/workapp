@@ -13,7 +13,10 @@ class ResultView(ttk.Frame):
         self.count = tk.StringVar(value="")
         ttk.Label(self, textvariable=self.count,
                   font=("Segoe UI", 12, "bold"),
-                  foreground=TH.PRIMARY).pack(anchor="w", pady=(0, 8))
+                  foreground=TH.PRIMARY).pack(anchor="w", pady=(0, 2))
+        self.stats = tk.StringVar(value="")
+        ttk.Label(self, textvariable=self.stats,
+                  style="Muted.TLabel").pack(anchor="w", pady=(0, 8))
 
         canvas = tk.Canvas(self, highlightthickness=0, background=TH.BG)
         scrollbar = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
@@ -32,6 +35,16 @@ class ResultView(ttk.Frame):
     def refresh_count(self, jobs: list):
         lang = self.app.lang
         self.count.set(f"📋 {t('results_for', lang)}: {len(jobs)}")
+        if not jobs:
+            self.stats.set("")
+            return
+        scores = [j.get("score") for j in jobs if isinstance(j.get("score"), (int, float))]
+        avg = f" · ⭐ {sum(scores) / len(scores):.0f}%" if scores else ""
+        by_src: dict[str, int] = {}
+        for j in jobs:
+            by_src[j.get("source", "?")] = by_src.get(j.get("source", "?"), 0) + 1
+        top = " · ".join(f"{s}: {n}" for s, n in sorted(by_src.items(), key=lambda x: -x[1])[:5])
+        self.stats.set(f"📡 {top}{avg}")
 
     def show_jobs(self, jobs: list, lang: str = "es"):
         for w in self.inner.winfo_children():
