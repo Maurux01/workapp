@@ -245,6 +245,8 @@ async function search() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spin"></span>' + esc(T('searching'));
   state.q = kw; state.loc = loc;
+  $('resTitle').textContent = T('searching');
+  $('results').innerHTML = '<div class="card"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>'.repeat(3);
   try {
     const key = [kw, loc, jt.sort().join(','), md.sort().join(',')].join('|');
     let jobs = cacheGet(key);
@@ -304,7 +306,25 @@ function render(jobs) {
 }
 
 /* ---------- wire ---------- */
+function applyThemeIcon() {
+  $('themeBtn').textContent = document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙';
+}
 window.addEventListener('DOMContentLoaded', () => {
+  try {
+    if (localStorage.getItem('workapp_theme') === 'dark' ||
+        (!localStorage.getItem('workapp_theme') &&
+         window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.dataset.theme = 'dark';
+    }
+  } catch (e) { /* ignore */ }
+  applyThemeIcon();
+  $('themeBtn').onclick = () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? '' : 'dark';
+    if (next) document.documentElement.dataset.theme = next;
+    else document.documentElement.removeAttribute('data-theme');
+    try { localStorage.setItem('workapp_theme', next || 'light'); } catch (e) { /* ignore */ }
+    applyThemeIcon();
+  };
   if (window.pdfjsLib && window.pdfjsLib.GlobalWorkerOptions) {
     window.pdfjsLib.GlobalWorkerOptions.workerSrc =
       'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';

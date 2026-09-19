@@ -18,6 +18,7 @@ create table if not exists jobs (
 
 -- Allow the anon/service key used by the app to read + upsert.
 alter table jobs enable row level security;
+grant select, insert, update, delete on public.jobs to anon, authenticated;
 drop policy if exists "jobs_read_all" on jobs;
 drop policy if exists "jobs_write_all" on jobs;
 create policy "jobs_read_all" on jobs for select using (true);

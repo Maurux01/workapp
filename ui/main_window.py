@@ -1,16 +1,15 @@
-"""Main window: themed nav + header + status bar, full ES/EN rebuild on switch."""
+"""Main window: indigo header, pill nav, status bar, full ES/EN rebuild."""
 import tkinter as tk
 from tkinter import ttk, messagebox
 from config import APP_NAME, DEFAULT_LANG, DEFAULT_LOCATION
 from core.job_matcher import JobMatcher
 from core.spam_detector import SpamDetector
 from scrapers.scraper_manager import ScraperManager
+from ui import theme as TH
 from ui.views.home_view import HomeView
 from ui.views.result_view import ResultView
 from ui.views.settings_view import SettingsView
 from utils.i18n import t
-
-PRIMARY = "#1d4ed8"
 
 
 class MainWindow(tk.Tk):
@@ -22,53 +21,45 @@ class MainWindow(tk.Tk):
         self.matcher = JobMatcher()
         self.spam = SpamDetector()
         self.scrapers = ScraperManager()
-        self._style()
-        self.geometry("780x680")
-        self.minsize(680, 560)
+        TH.apply(self)
+        self.geometry("820x700")
+        self.minsize(700, 580)
         self._build_chrome()
         self._build_views()
         self._apply_title()
 
-    # --- chrome ---
-    def _style(self):
-        style = ttk.Style(self)
-        for theme in ("clam", "vista", "xpnative", "default"):
-            if theme in style.theme_names():
-                style.theme_use(theme)
-                break
-        style.configure("Header.TFrame", background=PRIMARY)
-        style.configure("Header.TLabel", background=PRIMARY, foreground="white")
-        style.configure("HeaderTitle.TLabel", background=PRIMARY, foreground="white",
-                        font=("Segoe UI", 13, "bold"))
-
     def _build_chrome(self):
-        header = ttk.Frame(self, style="Header.TFrame", padding=10)
+        header = ttk.Frame(self, style="Header.TFrame", padding=(16, 14))
         header.pack(fill="x")
-        self.title_lbl = ttk.Label(header, text=APP_NAME, style="HeaderTitle.TLabel")
-        self.title_lbl.pack(side="left")
-        self.tag_lbl = ttk.Label(header, text="", style="Header.TLabel")
-        self.tag_lbl.pack(side="left", padx=10)
+        txt = ttk.Frame(header, style="Header.TFrame")
+        txt.pack(side="left")
+        self.title_lbl = ttk.Label(txt, text="💼 " + APP_NAME, style="HeaderTitle.TLabel")
+        self.title_lbl.pack(anchor="w")
+        self.tag_lbl = ttk.Label(txt, text="", style="HeaderSub.TLabel")
+        self.tag_lbl.pack(anchor="w")
         lang_box = ttk.Frame(header, style="Header.TFrame")
-        lang_box.pack(side="right")
+        lang_box.pack(side="right", anchor="e")
         ttk.Button(lang_box, text="ES",
-                   command=lambda: self.set_lang("es")).pack(side="left", padx=2)
+                   command=lambda: self.set_lang("es")).pack(side="left", padx=3)
         ttk.Button(lang_box, text="EN",
-                   command=lambda: self.set_lang("en")).pack(side="left", padx=2)
+                   command=lambda: self.set_lang("en")).pack(side="left", padx=3)
 
-        self.nav = ttk.Frame(self, padding=(8, 6, 8, 0))
+        self.nav = ttk.Frame(self, padding=(12, 10, 12, 0))
         self.nav.pack(fill="x")
         self.nav_btns = {}
         for key in ("nav_home", "nav_results", "nav_settings"):
-            btn = ttk.Button(self.nav, text="",
+            btn = ttk.Button(self.nav, text="", style="Ghost.TButton",
                              command=lambda k=key: self.show(k))
             btn.pack(side="left", padx=4)
             self.nav_btns[key] = btn
 
         self.container = ttk.Frame(self)
-        self.container.pack(fill="both", expand=True, padx=8, pady=6)
+        self.container.pack(fill="both", expand=True, padx=10, pady=8)
         self.status = tk.StringVar(value="")
-        ttk.Label(self, textvariable=self.status, relief="sunken",
-                  anchor="w", padding=4).pack(fill="x", side="bottom")
+        bar = ttk.Label(self, textvariable=self.status, relief="flat",
+                        anchor="w", padding=6, background=TH.PRIMARY_SOFT,
+                        foreground=TH.PRIMARY, font=("Segoe UI", 9))
+        bar.pack(fill="x", side="bottom")
 
     def _build_views(self):
         for w in self.container.winfo_children():
@@ -84,7 +75,6 @@ class MainWindow(tk.Tk):
         self._current = "nav_home"
         self.show("nav_home")
 
-    # --- behavior ---
     def _apply_title(self):
         self.title(f"{APP_NAME} — {t('tagline', self.lang)}")
 
@@ -98,9 +88,9 @@ class MainWindow(tk.Tk):
         self.cv_data = cv_data
         n = len(cv_data.get("skills", []))
         self.views["nav_home"].set_info(
-            f"{t('cv_ready', self.lang)} ({n} {t('skills', self.lang).lower()}): "
+            f"✅ {t('cv_ready', self.lang)} ({n} {t('skills', self.lang).lower()}): "
             + ", ".join(cv_data.get("skills", [])[:10]))
-        self.status.set(f"CV: {cv_data.get('email', '')}")
+        self.status.set(f"📄 CV: {cv_data.get('email', '')}")
 
     def set_lang(self, lang: str):
         if lang not in ("es", "en") or lang == self.lang:
@@ -113,8 +103,6 @@ class MainWindow(tk.Tk):
         if jobs:
             self.jobs = jobs
             self.views["nav_results"].show_jobs(jobs, lang=self.lang)
-        self.views["nav_home"].set_info(
-            self.views["nav_home"].info.cget("text"))
 
     def search_jobs(self, keyword: str, location: str, hide_spam: bool = True,
                     job_types: list | None = None, modalities: list | None = None):
@@ -123,8 +111,8 @@ class MainWindow(tk.Tk):
             return
         location = location or DEFAULT_LOCATION
         self.views["nav_home"].set_info(
-            f"{t('searching', self.lang)} '{keyword}' {t('in', self.lang)} {location}…")
-        self.status.set(f"{t('searching', self.lang)}…")
+            f"🔎 {t('searching', self.lang)} '{keyword}' {t('in', self.lang)} {location}…")
+        self.status.set(f"🔎 {t('searching', self.lang)}…")
         self.update_idletasks()
         try:
             jobs = self.scrapers.search_all(keyword, location,
@@ -141,8 +129,8 @@ class MainWindow(tk.Tk):
             jobs = self.matcher.rank(self.cv_data, jobs)
         self.jobs = jobs
         self.views["nav_results"].show_jobs(jobs, lang=self.lang)
-        self.views["nav_home"].set_info(f"{len(jobs)} {t('found', self.lang)}")
-        self.status.set(f"{len(jobs)} {t('found', self.lang)} · {location}")
+        self.views["nav_home"].set_info(f"🎉 {len(jobs)} {t('found', self.lang)}")
+        self.status.set(f"🎉 {len(jobs)} {t('found', self.lang)} · {location}")
         self.show("nav_results")
 
 

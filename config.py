@@ -49,7 +49,11 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
 # Companies that never hire (ghost posts / spam). Case-insensitive substring
 # match against company_name. Extend via BLOCKED_COMPANIES env (comma list).
 _BLOCKED_EXTRA = [c.strip() for c in os.getenv("BLOCKED_COMPANIES", "").split(",") if c.strip()]
-BLOCKED_COMPANIES = ["varesdev", *_BLOCKED_EXTRA]
+BLOCKED_COMPANIES = [
+    "bairesdev",   # spam masivo de la misma oferta + salarios bajo mercado
+    "manstaff",    # intermediaria fantasma sin presencia clara
+    *_BLOCKED_EXTRA,
+]
 
 # Evergreen / talent-pool bait typical of ghost jobs (both languages).
 GHOST_KEYWORDS = [

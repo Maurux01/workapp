@@ -9,13 +9,18 @@ _analyzer = CVAnalyzer()
 
 class PdfUploader(ttk.Frame):
     def __init__(self, parent, on_analyzed=None, lang: str = "es", **kwargs):
-        super().__init__(parent, **kwargs)
+        super().__init__(parent, style="Card.TFrame", padding=14, **kwargs)
         self.on_analyzed = on_analyzed
         self.lang = lang
         self.status = tk.StringVar(value=t("no_cv", lang))
-        ttk.Button(self, text=t("upload_cv", lang), command=self._pick).pack(side="left")
-        ttk.Label(self, textvariable=self.status, foreground="#64748b",
-                  wraplength=480, justify="left").pack(side="left", padx=10)
+        ttk.Label(self, text="📄 " + t("upload_cv", lang),
+                  style="CardTitle.TLabel").pack(anchor="w", pady=(0, 8))
+        row = ttk.Frame(self, style="Card.TFrame")
+        row.pack(fill="x")
+        ttk.Button(row, text="⬆ " + t("upload_cv", lang), style="Ghost.TButton",
+                   command=self._pick).pack(side="left")
+        ttk.Label(row, textvariable=self.status, style="CardMuted.TLabel",
+                  wraplength=420, justify="left").pack(side="left", padx=12)
 
     def _pick(self):
         path = filedialog.askopenfilename(filetypes=[("PDF", "*.pdf")])
@@ -27,8 +32,8 @@ class PdfUploader(ttk.Frame):
             return
         skills = ", ".join(data.get("skills", [])[:12]) or "—"
         self.status.set(
-            f"{t('cv_ready', self.lang)}: {data.get('email', '')} · "
-            f"{t('experience', self.lang)}: {data.get('experience_years', '')} · {skills[:90]}"
+            f"✅ {t('cv_ready', self.lang)}: {data.get('email', '')} · "
+            f"{t('experience', self.lang)}: {data.get('experience_years', '')}\n{skills[:100]}"
         )
         if self.on_analyzed:
             self.on_analyzed(data)
